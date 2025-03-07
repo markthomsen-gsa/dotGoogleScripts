@@ -336,26 +336,9 @@ function freezePanes(sheet, errors) {
 // Optimized banding with caching for performance
 function applyBanding(sheet, dataRange, errors) {
   try {
-    // Check cached status first
-    const scriptProperties = PropertiesService.getScriptProperties();
-    const sheetId = sheet.getSheetId();
-    const lastBandingKey = `lastBanding_${sheetId}`;
-    const lastBandingTime = scriptProperties.getProperty(lastBandingKey);
-    
-    // Check if banding was recently applied
-    if (lastBandingTime) {
-      const lastTime = new Date(lastBandingTime).getTime();
-      const currentTime = new Date().getTime();
-      const timeDiff = (currentTime - lastTime) / (1000 * 60); // Minutes
-      
-      // If banding was applied in the last hour, skip
-      if (timeDiff < 60) {
-        return "Skipped banding - recently applied.";
-      }
-    }
-    
-    // Apply banding only if not already present
+    // Remove all PropertiesService code
     const existingBandings = sheet.getBandings() || [];
+    
     if (existingBandings.length > 0) {
       return "Alternating banding was already applied; skipping banding.";
     } else {
@@ -371,9 +354,6 @@ function applyBanding(sheet, dataRange, errors) {
       }
       
       dataRange.applyRowBanding(theme, true, true);
-      
-      // Cache the current timestamp
-      scriptProperties.setProperty(lastBandingKey, new Date().toISOString());
       return "Alternating banding applied with header and footer.";
     }
   } catch (e) {
@@ -381,7 +361,6 @@ function applyBanding(sheet, dataRange, errors) {
     return "Error applying banding.";
   }
 }
-
 function boldHeaderRow(sheet, errors) {
   try {
     const headerRange = sheet.getRange(1, 1, 1, sheet.getLastColumn());
