@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 10px;
+        font-size: 14px;
+        color: #333;
+      }
+      .header {
+        font-weight: bold;
+        margin-bottom: 15px;
+        font-size: 16px;
+        color: #4285f4;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #e0e0e0;
+      }
+      /* Accordion Style */
+      .accordion {
+        margin-bottom: 8px;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        overflow: hidden;
+      }
+      .accordion-header {
+        padding: 10px;
+        background-color: #f5f5f5;
+        cursor: pointer;
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .accordion-header:hover {
+        background-color: #e9e9e9;
+      }
+      .accordion-content {
+        padding: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-out;
+        background-color: #fff;
+      }
+      .accordion-content.active {
+        padding: 10px;
+        max-height: 1000px; /* Just a large value */
+        border-top: 1px solid #e0e0e0;
+      }
+      .accordion-icon {
+        transition: transform 0.3s;
+      }
+      .accordion-icon.active {
+        transform: rotate(180deg);
+      }
+      .form-group {
+        margin-bottom: 12px;
+      }
+      .form-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+      label {
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+      }
+      .checkbox-label {
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+      }
+      .checkbox-label input {
+        margin-right: 8px;
+      }
+      select, input[type="number"], input[type="text"] {
+        width: 100%;
+        padding: 6px 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        margin-bottom: 8px;
+        font-size: 14px;
+      }
+      .label-with-tooltip {
+        display: flex;
+        align-items: center;
+        flex: 1;
+      }
+      .hidden {
+        display: none;
+      }
+      .button-row {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 15px;
+      }
+      .button-row button {
+        padding: 6px 12px;
+      }
+      .main-button {
+        background-color: #4285f4;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        width: 100%;
+        margin-top: 15px;
+        font-weight: bold;
+      }
+      .main-button:hover {
+        background-color: #2a75f3;
+      }
+      .main-button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+      .secondary-button {
+        background-color: #f1f1f1;
+        color: #333;
+        border: 1px solid #ccc;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .secondary-button:hover {
+        background-color: #e1e1e1;
+      }
+      .alert {
+        padding: 8px;
+        margin: 8px 0;
+        border-radius: 4px;
+      }
+      .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+      }
+      .alert-error {
+        background-color: #f8d7da;
+        color: #721c24;
+      }
+      .alert-warning {
+        background-color: #fff3cd;
+        color: #856404;
+      }
+      .alert-info {
+        background-color: #d1ecf1;
+        color: #0c5460;
+      }
+      .status {
+        margin-top: 12px;
+        padding: 8px;
+        border-radius: 4px;
+      }
+      .load-save-row {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 8px;
+        margin-bottom: 16px;
+      }
+      .load-save-row button {
+        flex: 1;
+        margin: 0 5px;
+        padding: 6px 0;
+        background-color: #f1f1f1;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .load-save-row button:hover {
+        background-color: #e0e0e0;
+      }
+      /* Tooltip */
+      .info-icon {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background-color: #4285f4;
+        color: white;
+        text-align: center;
+        font-size: 11px;
+        line-height: 16px;
+        margin-left: 5px;
+        cursor: help;
+      }
+      .tooltip {
+        position: relative;
+        display: inline-block;
+      }
+      .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 200px;
+        background-color: #555;
+        color: #fff;
+        text-align: left;
+        border-radius: 4px;
+        padding: 8px;
+        position: absolute;
+        z-index: 1;
+        top: -5px;
+        left: 125%;
+        opacity: 0;
+        transition: opacity 0.3s;
+        font-size: 12px;
+        line-height: 1.4;
+      }
+      .tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+      }
+      /* Color picker styles */
+      .color-picker {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin-top: 5px;
+      }
+      .color-option {
+        width: 20px;
+        height: 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        border: 1px solid #ccc;
+      }
+      .color-option.selected {
+        border: 2px solid #000;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">Sheet Formatting Options</div>
+    
+    <div id="status" class="status" style="display: none;"></div>
+    
+    <div class="load-save-row">
+      <button onclick="loadConfig()">Load Preset</button>
+      <button onclick="saveConfig()">Save Preset</button>
+    </div>
+    
+    <!-- FORMAT TARGET -->
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        Format Target <span class="accordion-icon">▼</span>
+      </div>
+      <div class="accordion-content active">
+        <div class="form-group">
+          <label>Apply formatting to:</label>
+          <div class="tooltip">
+            <span class="info-icon">i</span>
+            <span class="tooltiptext">Choose which cells will be affected by the formatting</span>
+          </div>
+          <select id="formatTarget" onchange="updateTargetOptions()">
+            <option value="entireSheet">Entire Sheet</option>
+            <option value="selectedRange">Selected Range</option>
+            <option value="dataRange">Data Range Only</option>
+            <option value="detectTable">Detect Table Around Selection</option>
+            <option value="customRange">Custom Range (A1 Notation)</option>
+            <option value="namedRange">Named Range</option>
+            <option value="currentRow">Current Row</option>
+            <option value="currentColumn">Current Column</option>
+            <option value="filteredRows">Filtered Rows Only</option>
+            <option value="visibleCells">Visible Cells Only</option>
+            <option value="conditional">Cells Matching Condition</option>
+          </select>
+        </div>
+        
+        <!-- Custom Range Input -->
+        <div id="customRangeGroup" class="form-group" style="display: none;">
+          <label>Custom Range:</label>
+          <input type="text" id="customRange" placeholder="e.g., A1:C10">
+          <div class="tooltip">
+            <span class="info-icon">i</span>
+            <span class="tooltiptext">Enter a cell range in A1 notation (e.g., A1:C10)</span>
+          </div>
+        </div>
+        
+        <!-- Named Range Selector -->
+        <div id="namedRangeGroup" class="form-group" style="display: none;">
+          <label>Select Named Range:</label>
+          <select id="namedRange">
+            <option value="">Loading named ranges...</option>
+          </select>
+          <div class="tooltip">
+            <span class="info-icon">i</span>
+            <span class="tooltiptext">Choose from named ranges defined in this spreadsheet</span>
+          </div>
+        </div>
+        
+        <!-- Conditional Selection Options -->
+        <div id="conditionalGroup" class="form-group" style="display: none;">
+          <label>Find cells where:</label>
+          <select id="conditionType" onchange="updateConditionFields()">
+            <option value="contains">Value contains</option>
+            <option value="equals">Value equals</option>
+            <option value="greaterThan">Value greater than</option>
+            <option value="lessThan">Value less than</option>
+            <option value="blank">Cell is blank</option>
+            <option value="notBlank">Cell is not blank</option>
+            <option value="formula">Cell contains formula</option>
+          </select>
+          
+          <div id="conditionValueGroup" style="margin-top: 8px;">
+            <input type="text" id="conditionValue" placeholder="Enter value">
+          </div>
+          
+          <div class="checkbox-label" style="margin-top: 8px;">
+            <input type="checkbox" id="includeHeaders">
+            <div class="label-with-tooltip">
+              Include header row
+              <div class="tooltip">
+                <span class="info-icon">i</span>
+                <span class="tooltiptext">Also format the header row when formatting matching cells</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Table Detection Options -->
+        <div id="tableDetectionGroup" class="form-group" style="display: none;">
+          <div class="alert alert-info">
+            <strong>Smart Table Detection:</strong> The formatter will automatically find the table boundaries around your selected cell.
+          </div>
+          <div class="checkbox-label">
+            <input type="checkbox" id="includeTableHeader" checked>
+            <div class="label-with-tooltip">
+              Identify first row as header
+              <div class="tooltip">
+                <span class="info-icon">i</span>
+                <span class="tooltiptext">Apply header-specific formatting to the first row</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Filtered Data Options -->
+        <div id="filteredDataGroup" class="form-group" style="display: none;">
+          <div class="alert alert-info">
+            <strong>Note:</strong> This option only works when the sheet has an active filter.
+          </div>
+          <div class="checkbox-label">
+            <input type="checkbox" id="includeFilterHeader" checked>
+            <div class="label-with-tooltip">
+              Include filter header row
+              <div class="tooltip">
+                <span class="info-icon">i</span>
+                <span class="tooltiptext">Also format the row containing filter buttons</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Target Preview -->
+        <div class="form-group" style="margin-top: 12px;">
+          <button id="previewTargetButton" class="secondary-button" onclick="previewTargetRange()">
+            Preview Selection
+          </button>
+          <div id="targetPreview" class="alert alert-info" style="display: none; margin-top: 8px;">
+            <!-- Preview information will be displayed here -->
+          </div>
+        </div>
+        
+        <!-- Warning about sheet-level operations -->
+        <div id="targetWarning" class="alert alert-warning" style="display: none;">
+          <strong>Note:</strong> Some options like deleting empty rows/columns, 
+          freezing panes, and banding will still apply to the entire sheet.
+        </div>
+      </div>
+    </div>
+    
+    <!-- DATA CLEANUP -->
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        Data Cleanup <span class="accordion-icon">▼</span>
+      </div>
+      <div class="accordion-content">
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="deleteEmptyRows">
+            <div class="label-with-tooltip">
+              Delete Empty Rows
+              <div class="tooltip">
+                <span class="info-icon">i</span>
+                <span class="tooltiptext">Removes all rows that contain no data to make your sheet more compact</span>
+              </div>
+            </div>
+          </label>
+        </div>
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="deleteEmptyColumns">
+            <div class="label-with-tooltip">
+              Delete Empty Columns
+              <div class="tooltip">
+                <span class="info-icon">i</span>
+                <span class="tooltiptext">Removes all columns that contain no data to make your sheet more compact</span>
+              </div>
+            </div>
+          </label>
+        </div>
+      </div>
+    </div>
+    
+    <!-- BORDERS & ALIGNMENT -->
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        Borders & Alignment <span class="accordion-icon">▼</span>
+      </div>
+      <div class="accordion-content">
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="setBorders" onchange="updateVisibility()">
+            <div class="label-with-tooltip">
+              Set Borders
+              <div class="tooltip">
+                <span class="info-icon">i</span>
+                <span class="tooltiptext">Adds visible borders to cells in the formatted range</span>
+              </div>
+            </div>
+          </label>
+        </div>
+        
+        <div id="borderOptions" class="form-group" style="display: none;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
+            <label class="checkbox-label">
+              <input type="checkbox" id="borderTop">
+              <div class="label-with-tooltip">
+                Top
+                <div class="tooltip">
+                  <span class="info-icon">i</span>
+                  <span class="tooltiptext">Adds a border to the top edge of cells</span>
+                </div>
+              </div>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="borderLeft">
+              <div class="label-with-tooltip">
+                Left
+                <div class="tooltip">
+                  <span class="info-icon">i</span>
+                  <span class="tooltiptext">Adds a border to the left edge of cells</span>
+                </div>
+              </div>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="borderBottom">
+              <div class="label-with-tooltip">
+                Bottom
+                <div class="tooltip">
+                  <span class="info-icon">i</span>
+                  <span class="tooltiptext">Adds a border to the bottom edge of cells</span>
+                </div>
+              </div>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="borderRight">
+              <div class="label-with-tooltip">
+                Right
+                <div class="tooltip">
+                  <span class="info-icon">i</span>
+                  <span class="tooltiptext">Adds a border to the right edge of cells</span>
+                </div>
+              </div>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="borderVertical">
+              <div class="label-with-tooltip">
+                Vertical
+                <div class="tooltip">
+                  <span class="info-icon">i</span>
+                  <span class="tooltiptext">Adds vertical borders between columns</span>
+                </div>
+              </div>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="borderHorizontal">
+              <div class="label-with-tooltip">
+                Horizontal
+                <div class="tooltip">
+                  <span class="info-icon">i</span>
+                  <span class="tooltiptext">Adds horizontal borders between rows</span>
+                </div>
+              </div>
+            </label>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label>
+            <div class="label-with-tooltip">
+              Horizontal Alignment
+              <div class="tooltip">
+                <span class="info-icon">i</span>
+                <span class="tooltiptext">Sets how text aligns horizontally within cells (left, center, right)</span>
+              </div>
+            </div>
+          </label>
+          <select id="horizontalAlignment">
+            <option value="left">Left</option>
+            <option value="center">Center</option>
+            <option value="right">Right</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label>
+            <div class="label-with-tooltip">
+              Vertical Alignment
+              <div class="tooltip">
+                <span class="info-icon">i</span>
+                <span class="tooltiptext">Sets how text aligns vertically within cells (top, middle, bottom)</span>
+              </div>
+            </div>
+          </label>
+          <select id="verticalAlignment">
+            <option value="top">Top</option>
+            <option value="middle">Middle</option>
+            <option value="bottom">Bottom</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    
+    <!-- FREEZE & HEADERS -->
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        Freeze & Headers <span class="accordion-icon">▼</span>
+      </div>
+      <div class="accordion-content">
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="freezeFirstRow">
+            <div class="label-with-tooltip">
+              Freeze First Row
+              <div class="tooltip">
+                <span class="info-icon">i</span>
+                <span class="tooltiptext">Keeps the header row visible when scrolling down</span>
+              </div>
+            </div>
+          </label>
+        </div>
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="freezeFirstColumn">
+            <div class="label-with-tooltip">
+              Freeze First Column
+              <div class="tooltip">
+                <span class="info-icon">i</span>
+                <span class="tooltiptext">Keeps the first column visible when scrolling right</span>
+              </div>
+            </div>
+          </label>
+        </div>
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="headerBold">
+            <div class="label-with-tooltip">
+              Bold Header Row
+              <div class="tooltip">
+                <span class="info-icon">i</span>
+                <span class="tooltiptext">Makes text in the header row bold for better visibility</span>
+              </div>
+            </div>
+          </label>
+        </div>
+      </div>
+    </div>
+    
+    <!-- APPEARANCE -->
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        Appearance <span class="accordion-icon">▼</span>
+      </div>
+      <div class="accordion-content">
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="banding" onchange="updateVisibility()">
+            <div class="label-with-tooltip">
+              Apply Banding
+              <div class="tooltip">
+                <span class="info-icon">i</span>
+                <span class="tooltiptext">Creates alternating colors for rows to improve readability</span>
+              </div>
+            </div>
+          </label>
+        </div>
+        
+        <div id="bandingOptions" class="form-group" style="display: none;">
+          <label>
+            <div class="label-with-tooltip">
+              Banding Theme
+              <div class="tooltip">
+                <span class="info-icon">i</span>
+                <span class="tooltiptext">Sets the color scheme used for alternating row colors</span>
+              </div>
+            </div>
+          </label>
+          <select id="bandingTheme">
+            <option value="BLUE">Blue</option>
+            <option value="GREEN">Green</option>
+            <option value="ORANGE">Orange</option>
+            <option value="GREY">Grey</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="hasCustomRowHeight" onchange="updateVisibility()">
+            <div class="label-with-tooltip">
+              Set Custom Row Height
+              <div class="tooltip">
+                <span class="info-icon">i</span>
+                <span class="tooltiptext">Enables setting a specific height for all rows</span>
+              </div>
+            </div>
+          </label>
+          <div id="customRowHeightGroup" style="display: none;">
+            <input type="number" id="customRowHeight" min="15" max="100" value="21">
+            <div class="tooltip">
+              <span class="info-icon">i</span>
+              <span class="tooltiptext">Sets the exact height for all rows in points</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="autoAdjust">
+            <div class="label-with-tooltip">
+              Auto-resize Rows & Columns
+              <div class="tooltip">
+                <span class="info-icon">i</span>
+                <span class="tooltiptext">Automatically resizes columns and rows to fit their content</span>
+              </div>
+            </div>
+          </label>
+        </div>
+      </div>
+    </div>
+    
+    <!-- FONT SETTINGS -->
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        Font Settings <span class="accordion-icon">▼</span>
+      </div>
+      <div class="accordion-content">
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="hasCustomFont" onchange="updateVisibility()">
+            <div class="label-with-tooltip">
+              Customize Font
+              <div class="tooltip">
+                <span class="info-icon">i</span>
+                <span class="tooltiptext">Enables font customization options</span>
+              </div>
+            </div>
+          </label>
+        </div>
+        
+        <div id="fontOptions" style="display: none;">
+          <div class="form-group">
+            <label>
+              <div class="label-with-tooltip">
+                Font Family
+                <div class="tooltip">
+                  <span class="info-icon">i</span>
+                  <span class="tooltiptext">Changes the typeface for all text in the formatted range</span>
+                </div>
+              </div>
+            </label>
+            <select id="fontFamily">
+              <option value="Arial">Arial</option>
+              <option value="Verdana">Verdana</option>
+              <option value="Helvetica">Helvetica</option>
+              <option value="Tahoma">Tahoma</option>
+              <option value="Trebuchet MS">Trebuchet MS</option>
+              <option value="Times New Roman">Times New Roman</option>
+              <option value="Georgia">Georgia</option>
+              <option value="Garamond">Garamond</option>
+              <option value="Courier New">Courier New</option>
+              <option value="Brush Script MT">Brush Script MT</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label>
+              <div class="label-with-tooltip">
+                Font Size
+                <div class="tooltip">
+                  <span class="info-icon">i</span>
+                  <span class="tooltiptext">Sets the text size for all cells in the formatted range</span>
+                </div>
+              </div>
+            </label>
+            <select id="fontSize">
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
+              <option value="12">12</option>
+              <option value="14">14</option>
+              <option value="16">16</option>
+              <option value="18">18</option>
+              <option value="20">20</option>
+              <option value="22">22</option>
+              <option value="24">24</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label>
+              <div class="label-with-tooltip">
+                Text Color
+                <div class="tooltip">
+                  <span class="info-icon">i</span>
+                  <span class="tooltiptext">Changes the color of text in all formatted cells</span>
+                </div>
+              </div>
+            </label>
+            <div class="color-picker" id="textColorPicker">
+              <div class="color-option" style="background-color: #000000" data-color="#000000"></div>
+              <div class="color-option" style="background-color: #434343" data-color="#434343"></div>
+              <div class="color-option" style="background-color: #666666" data-color="#666666"></div>
+              <div class="color-option" style="background-color: #999999" data-color="#999999"></div>
+              <div class="color-option" style="background-color: #b7b7b7" data-color="#b7b7b7"></div>
+              <div class="color-option" style="background-color: #cccccc" data-color="#cccccc"></div>
+              <div class="color-option" style="background-color: #d9d9d9" data-color="#d9d9d9"></div>
+              <div class="color-option" style="background-color: #efefef" data-color="#efefef"></div>
+              <div class="color-option" style="background-color: #f3f3f3" data-color="#f3f3f3"></div>
+              <div class="color-option" style="background-color: #ffffff" data-color="#ffffff"></div>
+              <div class="color-option" style="background-color: #980000" data-color="#980000"></div>
+              <div class="color-option" style="background-color: #ff0000" data-color="#ff0000"></div>
+              <div class="color-option" style="background-color: #ff9900" data-color="#ff9900"></div>
+              <div class="color-option" style="background-color: #ffff00" data-color="#ffff00"></div>
+              <div class="color-option" style="background-color: #00ff00" data-color="#00ff00"></div>
+              <div class="color-option" style="background-color: #00ffff" data-color="#00ffff"></div>
+              <div class="color-option" style="background-color: #4a86e8" data-color="#4a86e8"></div>
+              <div class="color-option" style="background-color: #0000ff" data-color="#0000ff"></div>
+              <div class="color-option" style="background-color: #9900ff" data-color="#9900ff"></div>
+              <div class="color-option" style="background-color: #ff00ff" data-color="#ff00ff"></div>
+            </div>
+            <input type="hidden" id="textColor" value="#000000">
+          </div>
+          
+          <div class="form-group">
+            <label>
+              <div class="label-with-tooltip">
+                Background Color
+                <div class="tooltip">
+                  <span class="info-icon">i</span>
+                  <span class="tooltiptext">Sets the background color for all formatted cells</span>
+                </div>
+              </div>
+            </label>
+            <div class="color-picker" id="backgroundColorPicker">
+              <div class="color-option" style="background-color: transparent" data-color=""></div>
+              <div class="color-option" style="background-color: #ffffff" data-color="#ffffff"></div>
+              <div class="color-option" style="background-color: #f3f3f3" data-color="#f3f3f3"></div>
+              <div class="color-option" style="background-color: #efefef" data-color="#efefef"></div>
+              <div class="color-option" style="background-color: #d9d9d9" data-color="#d9d9d9"></div>
+              <div class="color-option" style="background-color: #cccccc" data-color="#cccccc"></div>
+              <div class="color-option" style="background-color: #c0c0c0" data-color="#c0c0c0"></div>
+              <div class="color-option" style="background-color: #f4cccc" data-color="#f4cccc"></div>
+              <div class="color-option" style="background-color: #fce5cd" data-color="#fce5cd"></div>
+              <div class="color-option" style="background-color: #fff2cc" data-color="#fff2cc"></div>
+              <div class="color-option" style="background-color: #d9ead3" data-color="#d9ead3"></div>
+              <div class="color-option" style="background-color: #d0e0e3" data-color="#d0e0e3"></div>
+              <div class="color-option" style="background-color: #cfe2f3" data-color="#cfe2f3"></div>
+              <div class="color-option" style="background-color: #d9d2e9" data-color="#d9d2e9"></div>
+              <div class="color-option" style="background-color: #ead1dc" data-color="#ead1dc"></div>
+            </div>
+            <input type="hidden" id="backgroundColor" value="">
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Number Format -->
+    <div class="accordion">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        Number Format <span class="accordion-icon">▼</span>
+      </div>
+      <div class="accordion-content">
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="hasNumberFormat" onchange="updateVisibility()">
+            <div class="label-with-tooltip">
+              Apply Number Formatting
+              <div class="tooltip">
+                <span class="info-icon">i</span>
+                <span class="tooltiptext">Applies specific formats to display numbers</span>
+              </div>
+            </div>
+          </label>
+        </div>
+        
+        <div id="numberFormatOptions" style="display: none;">
+          <div class="form-group">
+            <label>
+              <div class="label-with-tooltip">
+                Format Type
+                <div class="tooltip">
+                  <span class="info-icon">i</span>
+                  <span class="tooltiptext">Choose how numbers should be displayed</span>
+                </div>
+              </div>
+            </label>
+            <select id="numberFormat" onchange="updateNumberFormatOptions()">
+              <option value="General">General</option>
+              <option value="Number">Number</option>
+              <option value="Currency">Currency</option>
+              <option value="Percent">Percent</option>
+              <option value="Date">Date</option>
+              <option value="Time">Time</option>
+              <option value="Scientific">Scientific</option>
+            </select>
+          </div>
+          
+          <div id="decimalPlacesGroup" style="display: none;">
+            <div class="form-group">
+              <label>
+                <div class="label-with-tooltip">
+                  Decimal Places
+                  <div class="tooltip">
+                    <span class="info-icon">i</span>
+                    <span class="tooltiptext">Number of digits to show after the decimal point</span>
+                  </div>
+                </div>
+              </label>
+              <select id="decimalPlaces">
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2" selected>2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+              </select>
+            </div>
+          </div>
+          
+          <div id="thousandsSeparatorGroup" style="display: none;">
+            <div class="form-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="useThousandsSeparator">
+                <div class="label-with-tooltip">
+                  Use Thousands Separator
+                  <div class="tooltip">
+                    <span class="info-icon">i</span>
+                    <span class="tooltiptext">Adds commas as thousands separators (e.g., 1,234)</span>
+                  </div>
+                </div>
+              </label>
+            </div>
+          </div>
+          
+          <div id="currencySymbolGroup" style="display: none;">
+            <div class="form-group">
+              <label>
+                <div class="label-with-tooltip">
+                  Currency Symbol
+                  <div class="tooltip">
+                    <span class="info-icon">i</span>
+                    <span class="tooltiptext">Symbol to display before currency values</span>
+                  </div>
+                </div>
+              </label>
+              <select id="currencySymbol">
+                <option value="$">$ (Dollar)</option>
+                <option value="€">€ (Euro)</option>
+                <option value="£">£ (Pound)</option>
+                <option value="¥">¥ (Yen)</option>
+                <option value="₹">₹ (Rupee)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <button id="applyButton" class="main-button">Apply Formatting</button>
+    
+    <script>
+      // Toggle accordion sections
+      function toggleAccordion(element) {
+        const content = element.nextElementSibling;
+        const icon = element.querySelector('.accordion-icon');
+        
+        content.classList.toggle('active');
+        icon.classList.toggle('active');
+      }
+      
+      // Show/hide dependent options
+      function updateVisibility() {
+        // Border options
+        document.getElementById('borderOptions').style.display = 
+          document.getElementById('setBorders').checked ? 'block' : 'none';
+          
+        // Banding options
+        document.getElementById('bandingOptions').style.display = 
+          document.getElementById('banding').checked ? 'block' : 'none';
+          
+        // Custom row height
+        document.getElementById('customRowHeightGroup').style.display = 
+          document.getElementById('hasCustomRowHeight').checked ? 'block' : 'none';
+          
+        // Font options
+        document.getElementById('fontOptions').style.display = 
+          document.getElementById('hasCustomFont').checked ? 'block' : 'none';
+          
+        // Number format options
+        document.getElementById('numberFormatOptions').style.display = 
+          document.getElementById('hasNumberFormat').checked ? 'block' : 'none';
+          
+        // Update number format specific options
+        updateNumberFormatOptions();
+      }
+      
+      // Update number format options based on selected format
+      function updateNumberFormatOptions() {
+        if (!document.getElementById('hasNumberFormat').checked) {
+          return;
+        }
+        
+        const format = document.getElementById('numberFormat').value;
+        
+        // Decimal places options
+        const showDecimals = ['Number', 'Currency', 'Percent', 'Scientific'].includes(format);
+        document.getElementById('decimalPlacesGroup').style.display = showDecimals ? 'block' : 'none';
+        
+        // Thousands separator option
+        const showThousands = ['Number', 'Currency'].includes(format);
+        document.getElementById('thousandsSeparatorGroup').style.display = showThousands ? 'block' : 'none';
+        
+        // Currency symbol option
+        const showCurrency = format === 'Currency';
+        document.getElementById('currencySymbolGroup').style.display = showCurrency ? 'block' : 'none';
+      }
+      
+      // Update target options based on selection
+      function updateTargetOptions() {
+        const target = document.getElementById('formatTarget').value;
+        
+        // Hide all option groups first
+        document.getElementById('customRangeGroup').style.display = 'none';
+        document.getElementById('namedRangeGroup').style.display = 'none';
+        document.getElementById('conditionalGroup').style.display = 'none';
+        document.getElementById('tableDetectionGroup').style.display = 'none';
+        document.getElementById('filteredDataGroup').style.display = 'none';
+        
+        // Show relevant option group based on target type
+        switch(target) {
+          case 'customRange':
+            document.getElementById('customRangeGroup').style.display = 'block';
+            break;
+          case 'namedRange':
+            document.getElementById('namedRangeGroup').style.display = 'block';
+            loadNamedRanges();
+            break;
+          case 'conditional':
+            document.getElementById('conditionalGroup').style.display = 'block';
+            updateConditionFields();
+            break;
+          case 'detectTable':
+            document.getElementById('tableDetectionGroup').style.display = 'block';
+            break;
+          case 'filteredRows':
+            document.getElementById('filteredDataGroup').style.display = 'block';
+            break;
+        }
+        
+        // Show warning for targets that may have sheet-level operations
+        document.getElementById('targetWarning').style.display = 
+          (target !== 'entireSheet') ? 'block' : 'none';
+        
+        // Clear any existing preview
+        document.getElementById('targetPreview').style.display = 'none';
+      }
+      
+      // Update condition fields based on condition type
+      function updateConditionFields() {
+        const conditionType = document.getElementById('conditionType').value;
+        const valueGroup = document.getElementById('conditionValueGroup');
+        
+        // Hide/show value input based on condition type
+        valueGroup.style.display = 
+          ['blank', 'notBlank', 'formula'].includes(conditionType) ? 'none' : 'block';
+      }
+      
+      // Load named ranges from the spreadsheet
+      function loadNamedRanges() {
+        document.getElementById('namedRange').innerHTML = '<option value="">Loading...</option>';
+        
+        google.script.run
+          .withSuccessHandler(function(namedRanges) {
+            const select = document.getElementById('namedRange');
+            select.innerHTML = '';
+            
+            if (namedRanges.length === 0) {
+              select.innerHTML = '<option value="">No named ranges available</option>';
+              return;
+            }
+            
+            namedRanges.forEach(function(range) {
+              const option = document.createElement('option');
+              option.value = range.name;
+              option.textContent = `${range.name} (${range.sheet}!${range.range})`;
+              select.appendChild(option);
+            });
+          })
+          .withFailureHandler(function(error) {
+            document.getElementById('namedRange').innerHTML = 
+              '<option value="">Error loading named ranges</option>';
+            showStatus('Error loading named ranges: ' + error.message, true);
+          })
+          .getNamedRanges();
+      }
+      
+      // Preview the target range
+      function previewTargetRange() {
+        const config = getTargetConfig();
+        const previewElement = document.getElementById('targetPreview');
+        
+        previewElement.innerHTML = '<div>Calculating target range...</div>';
+        previewElement.style.display = 'block';
+        
+        google.script.run
+          .withSuccessHandler(function(result) {
+            if (result.success) {
+              previewElement.innerHTML = `
+                <div style="font-weight: bold;">Selected Range:</div>
+                <div>${result.info}</div>
+                <div style="margin-top: 5px;">
+                  <span style="font-weight: bold;">Cells:</span> ${result.cellCount}
+                </div>
+              `;
+            } else {
+              previewElement.innerHTML = `<div style="color: #721c24;">Error: ${result.message}</div>`;
+            }
+          })
+          .withFailureHandler(function(error) {
+            previewElement.innerHTML = `<div style="color: #721c24;">Error: ${error.message}</div>`;
+          })
+          .previewTargetRange(config);
+      }
+      
+      // Show status message
+      function showStatus(message, isError) {
+        const statusDiv = document.getElementById('status');
+        statusDiv.className = 'status ' + (isError ? 'alert-error' : 'alert-success');
+        statusDiv.innerHTML = message;
+        statusDiv.style.display = 'block';
+        
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+          statusDiv.style.display = 'none';
+        }, 5000);
+      }
+      
+      // Color picker handling
+      function setupColorPickers() {
+        // Text color picker
+        const textColorPicker = document.getElementById('textColorPicker');
+        const textColorInput = document.getElementById('textColor');
+        
+        textColorPicker.querySelectorAll('.color-option').forEach(option => {
+          option.addEventListener('click', function() {
+            // Remove selected class from all options
+            textColorPicker.querySelectorAll('.color-option').forEach(opt => {
+              opt.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked option
+            this.classList.add('selected');
+            
+            // Update hidden input value
+            textColorInput.value = this.getAttribute('data-color');
+          });
+        });
+        
+        // Background color picker
+        const bgColorPicker = document.getElementById('backgroundColorPicker');
+        const bgColorInput = document.getElementById('backgroundColor');
+        
+        bgColorPicker.querySelectorAll('.color-option').forEach(option => {
+          option.addEventListener('click', function() {
+            // Remove selected class from all options
+            bgColorPicker.querySelectorAll('.color-option').forEach(opt => {
+              opt.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked option
+            this.classList.add('selected');
+            
+            // Update hidden input value
+            bgColorInput.value = this.getAttribute('data-color');
+          });
+        });
+        
+        // Select default colors
+        textColorPicker.querySelector('[data-color="#000000"]').classList.add('selected');
+        bgColorPicker.querySelector('[data-color=""]').classList.add('selected');
+      }
+      
+      // Get the target configuration from the form
+      function getTargetConfig() {
+        const target = document.getElementById('formatTarget').value;
+        const config = { formatTarget: target };
+        
+        // Add specific options based on target type
+        switch(target) {
+          case 'customRange':
+            config.customRange = document.getElementById('customRange').value;
+            break;
+          case 'namedRange':
+            config.namedRange = document.getElementById('namedRange').value;
+            break;
+          case 'conditional':
+            config.condition = {
+              type: document.getElementById('conditionType').value,
+              value: document.getElementById('conditionValue').value,
+              includeHeaders: document.getElementById('includeHeaders').checked
+            };
+            break;
+          case 'detectTable':
+            config.includeTableHeader = document.getElementById('includeTableHeader').checked;
+            break;
+          case 'filteredRows':
+            config.includeFilterHeader = document.getElementById('includeFilterHeader').checked;
+            break;
+        }
+        
+        return config;
+      }
+      
+      // Initialize the form with current config values
+      function initForm(config) {
+        // Target
+        if (config.formatTarget) {
+          document.getElementById('formatTarget').value = config.formatTarget;
+          if (config.customRange) {
+            document.getElementById('customRange').value = config.customRange;
+          }
+        }
+        
+        // Data Cleanup
+        document.getElementById('deleteEmptyRows').checked = config.deleteEmptyRows;
+        document.getElementById('deleteEmptyColumns').checked = config.deleteEmptyColumns;
+        
+        // Borders & Alignment
+        document.getElementById('setBorders').checked = config.setBorders;
+        if (config.borderOptions) {
+          document.getElementById('borderTop').checked = config.borderOptions.top;
+          document.getElementById('borderLeft').checked = config.borderOptions.left;
+          document.getElementById('borderBottom').checked = config.borderOptions.bottom;
+          document.getElementById('borderRight').checked = config.borderOptions.right;
+          document.getElementById('borderVertical').checked = config.borderOptions.vertical;
+          document.getElementById('borderHorizontal').checked = config.borderOptions.horizontal;
+        }
+        document.getElementById('horizontalAlignment').value = config.horizontalAlignment;
+        document.getElementById('verticalAlignment').value = config.verticalAlignment;
+        
+        // Freeze & Headers
+        document.getElementById('freezeFirstRow').checked = config.freezeFirstRow;
+        document.getElementById('freezeFirstColumn').checked = config.freezeFirstColumn;
+        document.getElementById('headerBold').checked = config.headerBold;
+        
+        // Appearance
+        document.getElementById('banding').checked = config.banding;
+        document.getElementById('bandingTheme').value = config.bandingTheme;
+        document.getElementById('hasCustomRowHeight').checked = config.customRowHeight !== null;
+        document.getElementById('customRowHeight').value = config.customRowHeight || 21;
+        document.getElementById('autoAdjust').checked = config.autoAdjust;
+        
+        // Font settings if available
+        if (config.hasCustomFont) {
+          document.getElementById('hasCustomFont').checked = true;
+          if (config.fontFamily) document.getElementById('fontFamily').value = config.fontFamily;
+          if (config.fontSize) document.getElementById('fontSize').value = config.fontSize;
+          
+          // Text color
+          if (config.textColor) {
+            document.getElementById('textColor').value = config.textColor;
+            const textOption = document.querySelector(`#textColorPicker [data-color="${config.textColor}"]`);
+            if (textOption) {
+              document.querySelectorAll('#textColorPicker .color-option').forEach(opt => opt.classList.remove('selected'));
+              textOption.classList.add('selected');
+            }
+          }
+          
+          // Background color
+          if (config.backgroundColor) {
+            document.getElementById('backgroundColor').value = config.backgroundColor;
+            const bgOption = document.querySelector(`#backgroundColorPicker [data-color="${config.backgroundColor}"]`);
+            if (bgOption) {
+              document.querySelectorAll('#backgroundColorPicker .color-option').forEach(opt => opt.classList.remove('selected'));
+              bgOption.classList.add('selected');
+            }
+          }
+        }
+        
+        // Number formatting if available
+        if (config.hasNumberFormat) {
+          document.getElementById('hasNumberFormat').checked = true;
+          if (config.numberFormat) document.getElementById('numberFormat').value = config.numberFormat;
+          if (config.decimalPlaces !== undefined) document.getElementById('decimalPlaces').value = config.decimalPlaces;
+          if (config.useThousandsSeparator !== undefined) document.getElementById('useThousandsSeparator').checked = config.useThousandsSeparator;
+          if (config.currencySymbol) document.getElementById('currencySymbol').value = config.currencySymbol;
+        }
+        
+        updateVisibility();
+        updateTargetOptions();
+      }
+      
+      // Get the current configuration from the form
+      function getFormConfig() {
+        const hasCustomHeight = document.getElementById('hasCustomRowHeight').checked;
+        const hasCustomFont = document.getElementById('hasCustomFont').checked;
+        const hasNumberFormat = document.getElementById('hasNumberFormat').checked;
+        
+        // Start with target config
+        const config = getTargetConfig();
+        
+        // Add all other settings
+        config.deleteEmptyRows = document.getElementById('deleteEmptyRows').checked;
+        config.deleteEmptyColumns = document.getElementById('deleteEmptyColumns').checked;
+        
+        config.setBorders = document.getElementById('setBorders').checked;
+        config.borderOptions = {
+          top: document.getElementById('borderTop').checked,
+          left: document.getElementById('borderLeft').checked,
+          bottom: document.getElementById('borderBottom').checked,
+          right: document.getElementById('borderRight').checked,
+          vertical: document.getElementById('borderVertical').checked,
+          horizontal: document.getElementById('borderHorizontal').checked
+        };
+        
+        config.horizontalAlignment = document.getElementById('horizontalAlignment').value;
+        config.verticalAlignment = document.getElementById('verticalAlignment').value;
+        
+        config.freezeFirstRow = document.getElementById('freezeFirstRow').checked;
+        config.freezeFirstColumn = document.getElementById('freezeFirstColumn').checked;
+        config.headerBold = document.getElementById('headerBold').checked;
+        
+        config.banding = document.getElementById('banding').checked;
+        config.bandingTheme = document.getElementById('bandingTheme').value;
+        config.customRowHeight = hasCustomHeight ? parseInt(document.getElementById('customRowHeight').value) : null;
+        config.autoAdjust = document.getElementById('autoAdjust').checked;
+        
+        // Font settings
+        config.hasCustomFont = hasCustomFont;
+        if (hasCustomFont) {
+          config.fontFamily = document.getElementById('fontFamily').value;
+          config.fontSize = document.getElementById('fontSize').value;
+          config.textColor = document.getElementById('textColor').value;
+          config.backgroundColor = document.getElementById('backgroundColor').value;
+        }
+        
+        // Number formatting
+        config.hasNumberFormat = hasNumberFormat;
+        if (hasNumberFormat) {
+          config.numberFormat = document.getElementById('numberFormat').value;
+          config.decimalPlaces = document.getElementById('decimalPlaces').value;
+          config.useThousandsSeparator = document.getElementById('useThousandsSeparator').checked;
+          config.currencySymbol = document.getElementById('currencySymbol').value;
+        }
+        
+        return config;
+      }
+      
+      // Load a saved configuration
+      function loadConfig() {
+        google.script.run
+          .withSuccessHandler(function(configs) {
+            if (configs.length === 0) {
+              showStatus('No saved configurations found.', true);
+              return;
+            }
+            
+            const select = document.createElement('select');
+            select.id = 'configSelect';
+            select.style.width = '100%';
+            select.style.marginBottom = '10px';
+            
+            configs.forEach(function(config) {
+              const option = document.createElement('option');
+              option.value = config;
+              option.textContent = config;
+              select.appendChild(option);
+            });
+            
+            const div = document.createElement('div');
+            div.innerHTML = '<h3>Load Configuration</h3>' +
+                            '<p>Select a configuration to load:</p>';
+            div.appendChild(select);
+            
+            const button = document.createElement('button');
+            button.textContent = 'Load';
+            button.style.marginTop = '10px';
+            button.onclick = function() {
+              const name = select.value;
+              google.script.run
+                .withSuccessHandler(function(result) {
+                  if (result.success) {
+                    initForm(result.config);
+                    showStatus('Configuration "' + name + '" loaded successfully!', false);
+                  } else {
+                    showStatus(result.message, true);
+                  }
+                })
+                .loadConfiguration(name);
+            };
+            div.appendChild(button);
+            
+            showDialog(div);
+          })
+          .getSavedConfigurations();
+      }
+      
+      function showDialog(content) {
+        const dialogBackground = document.createElement('div');
+        dialogBackground.style.position = 'fixed';
+        dialogBackground.style.top = '0';
+        dialogBackground.style.left = '0';
+        dialogBackground.style.width = '100%';
+        dialogBackground.style.height = '100%';
+        dialogBackground.style.backgroundColor = 'rgba(0,0,0,0.5)';
+        dialogBackground.style.zIndex = '1000';
+        dialogBackground.style.display = 'flex';
+        dialogBackground.style.justifyContent = 'center';
+        dialogBackground.style.alignItems = 'center';
+        
+        const dialog = document.createElement('div');
+        dialog.style.backgroundColor = 'white';
+        dialog.style.padding = '20px';
+        dialog.style.borderRadius = '5px';
+        dialog.style.maxWidth = '80%';
+        dialog.style.position = 'relative';
+        
+        const closeBtn = document.createElement('button');
+        closeBtn.textContent = '×';
+        closeBtn.style.position = 'absolute';
+        closeBtn.style.top = '5px';
+        closeBtn.style.right = '10px';
+        closeBtn.style.border = 'none';
+        closeBtn.style.background = 'none';
+        closeBtn.style.fontSize = '20px';
+        closeBtn.style.cursor = 'pointer';
+        closeBtn.onclick = function() {
+          document.body.removeChild(dialogBackground);
+        };
+        
+        dialog.appendChild(closeBtn);
+        dialog.appendChild(content);
+        dialogBackground.appendChild(dialog);
+        document.body.appendChild(dialogBackground);
+      }
+      
+      // Save the current configuration
+      function saveConfig() {
+        const nameInput = document.createElement('input');
+        nameInput.type = 'text';
+        nameInput.id = 'configName';
+        nameInput.style.width = '100%';
+        nameInput.style.marginBottom = '10px';
+        nameInput.placeholder = 'Configuration name';
+        
+        const div = document.createElement('div');
+        div.innerHTML = '<h3>Save Configuration</h3>' +
+                        '<p>Enter a name for this configuration:</p>';
+        div.appendChild(nameInput);
+        
+        const button = document.createElement('button');
+        button.textContent = 'Save';
+        button.style.marginTop = '10px';
+        button.onclick = function() {
+          const name = nameInput.value;
+          if (!name) {
+            showStatus('Please enter a configuration name.', true);
+            return;
+          }
+          
+          google.script.run
+            .withSuccessHandler(function(message) {
+              showStatus(message, false);
+              document.querySelector('.dialog-background')?.remove();
+            })
+            .saveConfiguration(name);
+        };
+        div.appendChild(button);
+        
+        showDialog(div);
+      }
+      
+      // Apply the current configuration
+      function applyFormatting() {
+        const config = getFormConfig();
+        document.getElementById('applyButton').disabled = true;
+        
+        google.script.run
+          .withSuccessHandler(function(message) {
+            showStatus(message, false);
+            document.getElementById('applyButton').disabled = false;
+          })
+          .withFailureHandler(function(error) {
+            showStatus('Error: ' + error.message, true);
+            document.getElementById('applyButton').disabled = false;
+          })
+          .applyFormattingWithTarget(config);
+      }
+      
+      // Add event listeners
+      document.addEventListener('DOMContentLoaded', function() {
+        // Initialize form with current config
+        google.script.run
+          .withSuccessHandler(initForm)
+          .getCurrentConfig();
+        
+        // Set up visibility toggles
+        document.getElementById('setBorders').addEventListener('change', updateVisibility);
+        document.getElementById('banding').addEventListener('change', updateVisibility);
+        document.getElementById('hasCustomRowHeight').addEventListener('change', updateVisibility);
+        document.getElementById('hasCustomFont').addEventListener('change', updateVisibility);
+        document.getElementById('hasNumberFormat').addEventListener('change', updateVisibility);
+        document.getElementById('numberFormat').addEventListener('change', updateNumberFormatOptions);
+        
+        // Set up color pickers
+        setupColorPickers();
+        
+        // Add target selection handler
+        document.getElementById('formatTarget').addEventListener('change', updateTargetOptions);
+        
+        // Apply button handler
+        document.getElementById('applyButton').addEventListener('click', applyFormatting);
+        
+        // Open the first section by default
+        const firstHeader = document.querySelector('.accordion-header');
+        if (firstHeader) {
+          firstHeader.nextElementSibling.classList.add('active');
+          firstHeader.querySelector('.accordion-icon').classList.add('active');
+        }
+      });
+    </script>
+  </body>
+</html>
